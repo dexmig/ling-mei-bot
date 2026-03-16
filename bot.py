@@ -114,15 +114,14 @@ async def order_handler(message: Message):
 async def quantity_handler(message: Message, bot: Bot):
     user_id = message.from_user.id
 
-    if not waiting_for_quantity.get(user_id):
-        return
+    if waiting_for_quantity.get(user_id):
 
-    if not message.text.isdigit():
-        await message.answer("❗ Будь ласка, введіть тільки цифри (наприклад: 3 або 10).")
-        return
+        if not message.text.isdigit():
+            await message.answer("❗ Будь ласка, введіть тільки цифри (наприклад: 3 або 10).")
+            return
 
-    quantity = int(message.text)
-    product = user_last_product.get(user_id, "Невідомо")
+        quantity = int(message.text)
+        product = user_last_product.get(user_id, "Невідомо")
 
         username = message.from_user.username
         first_name = message.from_user.first_name
