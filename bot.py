@@ -140,7 +140,8 @@ async def quantity_handler(message: Message, bot: Bot):
         await message.answer("Дякуємо за ваш вибір! Наш менеджер зв'яжется з Вами протягом дня 😊")
 
         # очищаем состояние
-        waiting_for_quantity.pop(user_id)
+        waiting_for_quantity.pop(user_id, None)
+        user_last_product.pop(user_id, None)
 
 async def start_handler(message: Message):
     await message.answer(
@@ -179,7 +180,7 @@ async def main():
     dp.message.register(back_handler, F.text == "⬅ Назад")
     dp.message.register(order_handler, F.text == "🛒 Оформити замовлення")
 
-    dp.message.register(quantity_handler, F.text.regexp(r"^\d+$"))
+    dp.message.register(quantity_handler, F.text)
     dp.message.register(product_handler, F.text)
 
 
