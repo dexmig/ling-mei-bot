@@ -180,8 +180,9 @@ async def main():
     dp.message.register(back_handler, F.text == "⬅ Назад")
     dp.message.register(order_handler, F.text == "🛒 Оформити замовлення")
 
+    dp.message.register(quantity_handler, F.text.regexp(r"^\d+$"))
     dp.message.register(product_handler, F.text)
-    dp.message.register(quantity_handler, F.text)
+    
 
 
 
