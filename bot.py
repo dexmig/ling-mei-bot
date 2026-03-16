@@ -117,10 +117,10 @@ async def quantity_handler(message: Message, bot: Bot):
     if waiting_for_quantity.get(user_id):
 
         if not message.text.isdigit():
-            await message.answer("Будь ласка, введіть число.")
+            await message.answer("❗ Будь ласка, введіть тільки цифри (наприклад: 3 або 10).")
             return
 
-        quantity = message.text
+        quantity = int(message.text)
         product = user_last_product.get(user_id, "Невідомо")
 
         username = message.from_user.username
