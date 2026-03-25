@@ -155,6 +155,8 @@ async def quantity_handler(message: Message, bot: Bot):
 
         quantity = int(message.text)
         product = user_last_product.get(user_id, "Невідомо")
+        
+        log_action(message.from_user, "order", f"{product} x {quantity}")
 
         username = message.from_user.username
         first_name = message.from_user.first_name
