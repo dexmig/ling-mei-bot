@@ -93,6 +93,7 @@ async def catalog_handler(message: Message):
         "Оберіть товар:",
         reply_markup=get_catalog_menu()
     )
+    log_action(message.from_user, "catalog")
 
 async def back_handler(message: Message):
     await message.answer(
@@ -119,6 +120,7 @@ async def product_handler(message: Message):
             reply_markup=get_order_button(),
             parse_mode="HTML"
         )
+        log_action(message.from_user, "product", message.text)
 
 def get_order_button():
     keyboard = ReplyKeyboardMarkup(
@@ -139,6 +141,8 @@ async def order_handler(message: Message):
         await message.answer("Вкажіть кількість туб:")
     else:
         await message.answer("Спочатку оберіть товар.")
+
+    log_action(message.from_user, "order")
 
 async def quantity_handler(message: Message, bot: Bot):
     user_id = message.from_user.id
