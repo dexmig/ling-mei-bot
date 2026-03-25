@@ -1,3 +1,6 @@
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+from datetime import datetime
 import asyncio
 
 from aiogram import Bot, Dispatcher
@@ -8,7 +11,27 @@ from aiogram import F
 import pandas as pd
 import os
 
+scope = [
+    "https://spreadsheets.google.com/feeds",
+    "https://www.googleapis.com/auth/drive"
+]
+
+creds = ServiceAccountCredentials.from_json_keyfile_name("creds.json", scope)
+client = gspread.authorize(creds)
+
+sheet = client.open("analytics_lingmei_bot").sheet1
+
 SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGAzkrHzLNGq8vfOWc6lBr-7EjORyCyYrHBehlVpC377cu9ac0vhQq90NwFwXjY0XBu2I6UjWFxJjB/pub?output=csv"
+
+def log_action(user, action, extra=""):
+    sheet.append_row([
+        datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        user.id,
+        user.username,
+        user.first_name,
+        action,
+        extra
+    ])
 
 def load_products():
     df = pd.read_csv(SHEET_URL)
@@ -148,6 +171,7 @@ async def start_handler(message: Message):
         "Вітаємо в нашому магазині!",
         reply_markup=get_main_menu()
     )
+    log_action(message.from_user, "start")
 
 async def delivery_handler(message: Message):
     text = (
@@ -182,7 +206,7 @@ async def main():
 
     dp.message.register(quantity_handler, F.text.regexp(r"^\d+$"))
     dp.message.register(product_handler, F.text)
-    
+
 
 
 
