@@ -60,19 +60,6 @@ CREATE TABLE IF NOT EXISTS logs (
 """)
 conn.commit()
 
-cursor.execute(
-    "INSERT INTO logs (user_id, username, action, extra) VALUES (%s, %s, %s, %s)",
-    (123, "test_user", "test_action", "hello")
-)
-conn.commit()
-
-print("OK: INSERTED INTO LOGS")
-
-cursor.execute("SELECT * FROM logs;")
-rows = cursor.fetchall()
-
-print("DATA:", rows)
-
 creds_dict = json.loads(os.getenv("GOOGLE_CREDS"))
 
 creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
