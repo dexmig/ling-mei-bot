@@ -1,42 +1,12 @@
 import psycopg2
 import os
 
-try:
-    conn = psycopg2.connect(os.getenv("DATABASE_URL"))
-    cur = conn.cursor()
-
-    cur.execute("""
-    CREATE TABLE IF NOT EXISTS test (
-        id SERIAL PRIMARY KEY,
-        text TEXT
-    );
-    """)
-
-    conn.commit()
-    conn.close()
-
-    print("OK: TABLE CREATED")
-
-except Exception as e:
-    print("ERROR:", e)
-
-import psycopg2
-import os
-
 conn = psycopg2.connect(os.getenv("DATABASE_URL"))
 cursor = conn.cursor()
 
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-from datetime import datetime, timedelta
-
-kyiv_time = datetime.utcnow() + timedelta(hours=2)
-
-cursor.execute(
-    "INSERT INTO logs (user_id, username, action, extra, created_at) VALUES (%s, %s, %s, %s, %s)",
-    (user.id, user.username, action, extra, kyiv_time)
-)
-conn.commit()
+from datetime import datetime
 
 import asyncio
 
