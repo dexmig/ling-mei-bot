@@ -51,10 +51,12 @@ SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGAzkrHzLNGq8vfOWc
 def log_action(user, action, extra=""):
     # 1. запись в PostgreSQL
     cursor.execute(
-        "INSERT INTO logs (user_id, username, action, extra) VALUES (%s, %s, %s, %s)",
+        """
+        INSERT INTO logs (user_id, username, action, extra, created_at)
+        VALUES (%s, %s, %s, %s, NOW() + INTERVAL '2 hours')
+        """,
         (user.id, user.username, action, extra)
     )
-    conn.commit()
 
     # 2. запись в Google Sheets
     sheet.append_row([
