@@ -68,6 +68,11 @@ conn.commit()
 
 print("OK: INSERTED INTO LOGS")
 
+cursor.execute("SELECT * FROM logs;")
+rows = cursor.fetchall()
+
+print("DATA:", rows)
+
 creds_dict = json.loads(os.getenv("GOOGLE_CREDS"))
 
 creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
