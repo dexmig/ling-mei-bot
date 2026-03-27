@@ -1,6 +1,13 @@
+import psycopg2
+import os
+
+conn = psycopg2.connect(os.getenv("DATABASE_URL"))
+cursor = conn.cursor()
+
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
+
 import asyncio
 
 from aiogram import Bot, Dispatcher
@@ -9,7 +16,7 @@ from aiogram.types import Message
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram import F
 import pandas as pd
-import os
+
 
 scope = [
     "https://spreadsheets.google.com/feeds",
@@ -18,6 +25,18 @@ scope = [
 
 import os
 import json
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS logs (
+    id SERIAL PRIMARY KEY,
+    user_id BIGINT,
+    username TEXT,
+    action TEXT,
+    extra TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+""")
+conn.commit()
 
 creds_dict = json.loads(os.getenv("GOOGLE_CREDS"))
 
@@ -30,6 +49,14 @@ sheet = client.open("analytics_lingmei_bot").sheet1
 SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGAzkrHzLNGq8vfOWc6lBr-7EjORyCyYrHBehlVpC377cu9ac0vhQq90NwFwXjY0XBu2I6UjWFxJjB/pub?output=csv"
 
 def log_action(user, action, extra=""):
+    # 1. запись в PostgreSQL
+    cursor.execute(
+        "INSERT INTO logs (user_id, username, action, extra) VALUES (%s, %s, %s, %s)",
+        (user.id, user.username, action, extra)
+    )
+    conn.commit()
+
+    # 2. запись в Google Sheets
     sheet.append_row([
         datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         user.id,
@@ -155,7 +182,7 @@ async def quantity_handler(message: Message, bot: Bot):
 
         quantity = int(message.text)
         product = user_last_product.get(user_id, "Невідомо")
-        
+
         log_action(message.from_user, "order", f"{product} x {quantity}")
 
         username = message.from_user.username
