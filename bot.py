@@ -57,6 +57,7 @@ def log_action(user, action, extra=""):
         """,
         (user.id, user.username, action, extra)
     )
+    conn.commit()
     print("INSERT WITH KYIV TIME")
 
     # 2. запись в Google Sheets
