@@ -1,6 +1,28 @@
 import psycopg2
 import os
 
+try:
+    conn = psycopg2.connect(os.getenv("DATABASE_URL"))
+    cur = conn.cursor()
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS test (
+        id SERIAL PRIMARY KEY,
+        text TEXT
+    );
+    """)
+
+    conn.commit()
+    conn.close()
+
+    print("OK: TABLE CREATED")
+
+except Exception as e:
+    print("ERROR:", e)
+
+import psycopg2
+import os
+
 conn = psycopg2.connect(os.getenv("DATABASE_URL"))
 cursor = conn.cursor()
 
