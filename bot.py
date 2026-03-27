@@ -28,7 +28,15 @@ cursor = conn.cursor()
 
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-from datetime import datetime
+from datetime import datetime, timedelta
+
+kyiv_time = datetime.utcnow() + timedelta(hours=2)
+
+cursor.execute(
+    "INSERT INTO logs (user_id, username, action, extra, created_at) VALUES (%s, %s, %s, %s, %s)",
+    (user.id, user.username, action, extra, kyiv_time)
+)
+conn.commit()
 
 import asyncio
 
