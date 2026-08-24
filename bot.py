@@ -53,12 +53,12 @@ def log_action(user, action, extra=""):
     cursor.execute(
         """
         INSERT INTO logs (user_id, username, action, extra, created_at)
-        VALUES (%s, %s, %s, %s, NOW() AT TIME ZONE 'Europe/Kyiv')
+        VALUES (%s, %s, %s, %s, NOW())
         """,
         (user.id, user.username, action, extra)
     )
     conn.commit()
-    print("INSERT WITH KYIV TIME")
+
 
     # 2. запись в Google Sheets
     sheet.append_row([
